@@ -26,5 +26,6 @@ int main() {
 	value = "foo";
 	value = foo(5);
 	//value2 = 1;
-	std::cout << value << "\n";
+	//std::cout << value << "\n";
+	return 0;
 }
