@@ -1,30 +1,30 @@
 #include "pch.h"
-#include <map>
+#include <boost/variant.hpp>
 #include <string>
 #include <iostream>
-#include <boost/optional.hpp>
-#include <boost/optional/optional_io.hpp>
-#include <utility>
-#include <cstring>
 
-using artist_album_map = std::map<std::string, std::string>;
-artist_album_map latest_albums;
+struct foo {
+	foo(int n = 0) : id(n){}
 
-boost::optional<std::string> find_latest_album_of(const std::string& artist_name) {
-	auto itr = latest_albums.find(artist_name);
-	if (itr != latest_albums.end())
-		return itr->second;
-	else
-		return boost::none;
-}
+  private:
+	  int id;
+};
+
+struct bar {
+	bar(int n = 0) : id(n) {}
+
+private:
+	int id;
+};
 
 int main() {
-	std::string name;
-	latest_albums.insert(std::make_pair("billie eillish", "bitches broken hearts"));
-	latest_albums.insert(std::make_pair("lana del rey", "national anthem"));
-	latest_albums.insert(std::make_pair("weeknd", "starboy"));
-	std::getline(std::cin, name);
-	boost::optional<std::string> output = find_latest_album_of(name);
-	std::cout << output << std::endl;
-	return 0;
+	boost::variant<std::string, int, foo> value;
+	boost::variant<foo, bar, std::string> value2;
+	value = 1;
+	int *pi = boost::get<int>(&value);
+	assert(pi != nullptr);
+	value = "foo";
+	value = foo(5);
+	//value2 = 1;
+	std::cout << value << "\n";
 }
