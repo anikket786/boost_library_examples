@@ -8,11 +8,11 @@
 
 struct JSONNullType{};
 
-using JSONValue = boost::make_recursive_variant<std::string, bool, double, JSONNullType,
+typedef boost::make_recursive_variant < std::string, bool, double, JSONNullType,
 	std::map<std::string, boost::recursive_variant_>,
-	std::vector<boost::recursive_variant_>>;
-using JSONArray = std::vector<JSONValue>;
-using JSONObject = std::map<std::string, JSONValue>;
+	std::vector<boost::recursive_variant_>>::type JSONValue;
+typedef std::vector<JSONValue> JSONArray;
+typedef std::map<std::string, JSONValue> JSONObject;
 
 void printArrElement(const JSONValue& val);
 void printObjAttr(const JSONObject::value_type val);
