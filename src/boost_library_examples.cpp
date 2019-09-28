@@ -1,31 +1,19 @@
 #include "pch.h"
+#define BOOST_VARIANT_NO_FULL_RECURSIVE_VARIANT_SUPPORT
 #include <boost/variant.hpp>
 #include <string>
 #include <iostream>
+#include <map>
+#include <vector>
 
-struct foo {
-	foo(int n = 0) : id(n){}
+struct JSONNullType{};
 
-  private:
-	  int id;
-};
-
-struct bar {
-	bar(int n = 0) : id(n) {}
-
-private:
-	int id;
-};
+using JSONValue = boost::make_recursive_variant<std::string, bool, double, JSONNullType,
+	std::map<std::string, boost::recursive_variant_>,
+	std::vector<boost::recursive_variant_>>;
+using JSONArray = std::vector<JSONValue>;
+using JSONObject = std::map<std::string, JSONValue>;
 
 int main() {
-	boost::variant<std::string, int, foo> value;
-	boost::variant<foo, bar, std::string> value2;
-	value = 1;
-	int *pi = boost::get<int>(&value);
-	assert(pi != nullptr);
-	value = "foo";
-	value = foo(5);
-	//value2 = 1;
-	//std::cout << value << "\n";
-	return 0;
+	
 }
