@@ -1,5 +1,5 @@
 #include "pch.h"
-//#define BOOST_VARIANT_NO_FULL_RECURSIVE_VARIANT_SUPPORT
+#define BOOST_VARIANT_NO_FULL_RECURSIVE_VARIANT_SUPPORT
 #include <boost/variant.hpp>
 #include <string>
 #include <iostream>
