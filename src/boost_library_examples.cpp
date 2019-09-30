@@ -1,72 +1,39 @@
 #include "pch.h"
-#define BOOST_VARIANT_NO_FULL_RECURSIVE_VARIANT_SUPPORT
-#include <boost/variant.hpp>
+#include <boost/program_options.hpp>
 #include <string>
 #include <iostream>
 #include <map>
 #include <vector>
 
-struct JSONNullType{};
+namespace po = boost::program_options;
+namespace postyle = boost::program_options::command_line_style;
 
-typedef boost::make_recursive_variant < std::string, bool, double, JSONNullType,
-	std::map<std::string, boost::recursive_variant_>,
-	std::vector<boost::recursive_variant_>>::type JSONValue;
-typedef std::vector<JSONValue> JSONArray;
-typedef std::map<std::string, JSONValue> JSONObject;
+int main(int argc, char *argv[]) {
+	po::options_description desc("options");
+	desc.add_options()
+	   	("unified,U", po::value<unsigned int>()->default_value(3),
+			"Print in unified form with specified no. of lines from the surrounding context")
+			(",p", "Print names of C functions")
+		(",N", "assume presence of one file in absent directory")
+		("help,h" "Print thhis help message");
 
-void printArrElement(const JSONValue& val);
-void printObjAttr(const JSONObject::value_type val);
-
-struct JSONPrintVisitor : public boost::static_visitor<void> {
-	void operator()(const std::string& str) const {
-		std::cout << '"' << str << '"';
-	}
-
-	template<typename T>
-	void operator()(const T& value) const {
-		std::cout << std::boolalpha << value;
-	}
-
-	void operator()(const JSONNullType&) const {
-		std::cout << "null";
-	}
-
-	void operator()(const JSONArray& arr) const{
-		std::cout << '[';
-		if (!arr.empty()) {
-			boost::apply_visitor(*this, arr[0]);
-			std::for_each(arr.begin() + 1, arr.end(), printArrElement);
+	int unix_style = postyle::unix_style | postyle::short_allow_next;
+	int windows_style = postyle::allow_long | postyle::allow_short | postyle::allow_slash_for_short
+		                | postyle::case_insensitive | postyle::short_allow_next | postyle::long_allow_next;
+	po::variables_map vm;
+	try {
+		po::store(po::command_line_parser(argc, argv)
+			.options(desc)
+			.style(unix_style)
+			.run(), vm);
+		po::notify(vm);
+		if (argc == 1 || vm.count("help")) {
+			std::cout << "USAGE: " << argv[0] << '\n' << desc << '\n';
+			return 0;
 		}
-		std::cout << ']';
 	}
-
-	void operator()(const JSONObject& obj) const {
-		std::cout << '{';
-		if (!obj.empty()) {
-			const auto& kv_pair = *(obj.begin());
-			std::cout << '"' << kv_pair.first << '"';
-			std::cout << ':';
-			boost::apply_visitor(*this, kv_pair.second);
-			auto it = obj.begin();
-			std::for_each(++it, obj.end(), printObjAttr);
-		}
-		std::cout << '}';
+	catch (po::error& poe) {
+		std::cerr << poe.what() << '\n' << "USAGE: " << argv[0] << '\n' << desc << '\n';
+		return EXIT_FAILURE;
 	}
-};
-
-void printArrElement(const JSONValue& val) {
-	std::cout << ', ';
-	boost::apply_visitor(JSONPrintVisitor(), val);
-}
-
-void printObjAttr(const JSONObject::value_type val) {
-	std::cout << ',';
-	std::cout << '"' << val.first << '"';
-	std::cout << ':';
-	boost::apply_visitor(JSONPrintVisitor(), val.second);
-}
-
-int main() {
-	std::cout << "running" << std::endl;
-	return 0;
 }
