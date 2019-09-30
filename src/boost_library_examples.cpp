@@ -9,13 +9,13 @@ namespace po = boost::program_options;
 namespace postyle = boost::program_options::command_line_style;
 
 int main(int argc, char *argv[]) {
-	po::options_description desc("options");
+	po::options_description desc{ "options" };
 	desc.add_options()
 	   	("unified,U", po::value<unsigned int>()->default_value(3),
 			"Print in unified form with specified no. of lines from the surrounding context")
 			(",p", "Print names of C functions")
 		(",N", "assume presence of one file in absent directory")
-		("help,h" "Print thhis help message");
+		("help,h", "Print thhis help message");
 
 	int unix_style = postyle::unix_style | postyle::short_allow_next;
 	int windows_style = postyle::allow_long | postyle::allow_short | postyle::allow_slash_for_short
