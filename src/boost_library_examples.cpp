@@ -2,7 +2,7 @@
 #include <boost/program_options.hpp>
 #include <string>
 #include <iostream>
-
+#include <vector>
 
 namespace po = boost::program_options;
 namespace postyle = boost::program_options::command_line_style;
