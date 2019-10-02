@@ -1,9 +1,22 @@
 #include "pch.h"
-#include <boost/program_options.hpp>
 #include <string>
 #include <iostream>
 #include <vector>
+#include <boost/algorithm/string.hpp>
 
+int main() {
+	std::string song = "the scientist";
+	typedef boost::iterator_range<std::string::iterator> rangeType;
+	rangeType range = boost::make_iterator_range(song.begin(), song.begin() + 1);
+	rangeType range2 = boost::make_iterator_range(song.begin() + 4, song.begin() + 5);
+	boost::to_upper(range);
+	boost::to_upper(range2);
+	std::cout << song;
+	return 0;
+}
+
+
+/*
 namespace po = boost::program_options;
 namespace postyle = boost::program_options::command_line_style;
 
@@ -36,3 +49,4 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 }
+*/
