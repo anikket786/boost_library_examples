@@ -2,8 +2,21 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
 
+int main() {
+	std::string str;
+	boost::regex r1("([a-z\d-_]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?");
+	std::getline(std::cin, str);
+	bool flag = boost::regex_match(str, r1);
+	if (flag)
+		std::cout << "Valid Email!\n";
+	else
+		std::cout << "Not a valid Email!\n";
+	return 0;
+}
+
+/*
 int main() {
 	std::string song = "the scientist";
 	typedef boost::iterator_range<std::string::iterator> rangeType;
@@ -15,8 +28,6 @@ int main() {
 	return 0;
 }
 
-
-/*
 namespace po = boost::program_options;
 namespace postyle = boost::program_options::command_line_style;
 
